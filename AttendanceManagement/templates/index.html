@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Command Center · ManageAttendance{% endblock %}
+{% block content %}
+  <section class="glass" style="display:grid; gap:1.5rem; text-align:center; justify-items:center;">
+    <div style="display:flex; flex-direction:column; gap:0.9rem; max-width:720px; align-items:center;">
+      <h2 style="font-size:2.35rem; margin:0;">Hello, Welcome back!</h2>
+      <p class="badge">Secure · Offline First Model</p>
+      <p style="margin:0; color:var(--muted);">
+        ManageAttendance keeps attendance effortless. Capture clean datasets, refresh the recogniser,
+        and generate subject-wise dashboards directly in your browser. Every action runs locally,
+        so student privacy is never compromised.
+      </p>
+    </div>
+  </section>
+
+  <section class="grid">
+    <article class="card step-card">
+      <div class="badge">Step 1</div>
+      <h2>Register learners</h2>
+      <p>Capture 50+ frames per student for reliable embeddings. Guided instructions keep everyone comfortable.</p>
+      <div class="step-actions">
+        <a class="btn" href="{{ url_for('register') }}">Add New</a>
+      </div>
+    </article>
+    <article class="card step-card">
+      <div class="badge">Step 2</div>
+      <h2>Train recogniser</h2>
+      <p>LBPH refresh with a single click. No parameters to tune—defaults are battle-tested.</p>
+      <form method="post" action="{{ url_for('train_model') }}" class="step-actions">
+        <input type="submit" value="Retrain now" />
+      </form>
+    </article>
+    <article class="card step-card">
+      <div class="badge">Step 3</div>
+      <h2>Capture attendance</h2>
+      <p>Set a duration, point the camera at the class, and let the system tag familiar faces.</p>
+      <div class="step-actions">
+        <a class="btn" href="{{ url_for('attendance_view') }}">Launch capture</a>
+      </div>
+    </article>
+    <article class="card step-card">
+      <div class="badge">Step 4</div>
+      <h2>Review insights</h2>
+      <p>Combine CSV sessions into one beautiful sheet per subject, complete with percentages.</p>
+      <div class="step-actions">
+        <a class="btn" href="{{ url_for('summary_view') }}">Open reports</a>
+      </div>
+    </article>
+  </section>
+{% endblock %}

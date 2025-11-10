@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Attendance Reports · ManageAttendance{% endblock %}
+{% block content %}
+  <a class="page-back" href="{{ url_for('index') }}">← Back to dashboard</a>
+  <section class="glass" style="display:grid; gap:1.25rem;">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:space-between;">
+      <div>
+        <h2 style="margin:0 0 0.35rem;">Subject insights</h2>
+        <p>Merge every CSV generated for a subject into one tidy sheet, complete with per-student attendance percentages.</p>
+      </div>
+      <div class="badge">CSV + inline preview</div>
+    </div>
+    <form method="post" class="card" style="display:grid; gap:1.1rem;">
+      <label for="subject">Subject name</label>
+      <input
+        type="text"
+        id="subject"
+        name="subject"
+        required
+        placeholder="e.g. Data Science"
+        value="{{ subject or '' }}"
+      />
+      <input type="submit" value="Build report" />
+    </form>
+  </section>
+
+  {% if result %}
+    <section class="card" style="margin-top: 1.5rem;">
+      <div style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; justify-content:space-between;">
+        <h3 style="margin:0;">Summary</h3>
+        {% if result.summary_path %}
+          <span class="badge">Saved to {{ result.summary_path }}</span>
+        {% endif %}
+      </div>
+      {% if result.success and result.records %}
+        <p style="margin-top:0.75rem;">Rows combined: {{ result.records|length }}.</p>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                {% for column in result.columns %}
+                  <th>{{ column }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in result.records %}
+                <tr>
+                  {% for column in result.columns %}
+                    <td>{{ row[column] }}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p style="margin-top:1rem;">No summary data available yet. Capture attendance at least once before building reports.</p>
+      {% endif %}
+    </section>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Register Student · ManageAttendance{% endblock %}
+{% block content %}
+  <a class="page-back" href="{{ url_for('index') }}">← Back to dashboard</a>
+  <section class="glass" style="display:grid; gap:1.75rem;">
+    <div style="display:flex; flex-wrap:wrap; gap:1.5rem; align-items:flex-start;">
+      <div style="flex:1 1 280px;">
+        <h2 style="margin:0 0 0.4rem;">Capture a new student dataset</h2>
+        <p>Mark attendance with confidence by feeding the recogniser high-quality samples. Ask the learner to face the camera and gently change expressions.</p>
+        <ul style="margin:1rem 0 0; padding-left:1.2rem; color:var(--muted); line-height:1.6;">
+          <li>Remove accessories that hide facial features.</li>
+          <li>Request slow head turns for profile angles.</li>
+          <li>Stop the capture early with <code>q</code> if something feels off.</li>
+        </ul>
+      </div>
+      <div class="surface" style="flex:1 1 220px; text-align:left;">
+        <strong>Tip</strong>
+        <p style="margin:0.5rem 0 0;">Keep a soft light source in front of the student to reduce shadows and boost detector confidence.</p>
+      </div>
+    </div>
+    <form method="post" class="card" style="display:grid; gap:1.2rem;">
+      <div>
+        <label for="enrollment">Enrollment number</label>
+        <input
+          type="text"
+          id="enrollment"
+          name="enrollment"
+          inputmode="numeric"
+          required
+          placeholder="e.g. 210045"
+          value="{{ request.form.enrollment or '' }}"
+        />
+      </div>
+
+      <div>
+        <label for="full_name">Full name</label>
+        <input
+          type="text"
+          id="full_name"
+          name="full_name"
+          required
+          placeholder="e.g. Priya Sharma"
+          value="{{ request.form.full_name or '' }}"
+        />
+      </div>
+      <input type="submit" value="Start capture" />
+    </form>
+  </section>
+{% endblock %}

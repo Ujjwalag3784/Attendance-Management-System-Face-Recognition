@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}ManageAttendance{% endblock %}</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #010205ff;
+        --bg-accent: radial-gradient(circle at 20% 20%, rgba(18, 28, 45, 0.35), transparent 55%),
+          radial-gradient(circle at 80% 0%, rgba(214, 80, 147, 0.3), transparent 45%),
+          radial-gradient(circle at 50% 80%, rgba(56, 191, 248, 0.43), transparent 50%);
+        --card: rgba(15, 23, 42, 0.85);
+        --stroke: rgba(148, 163, 184, 0.15);
+        --accent: linear-gradient(130deg, #2563eb, #9333ea);
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --danger: #fb7185;
+        font-family: "Inter", "Segoe UI", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+      }
+      body::before {
+        content: "";
+        inset: 0;
+        position: fixed;
+        z-index: -2;
+        background: var(--bg-accent);
+        filter: blur(160px);
+        opacity: 0.75;
+      }
+      header {
+        padding: 1.25rem 5vw;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        backdrop-filter: blur(18px);
+        background: rgba(2, 6, 23, 0.8);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .brand {
+        font-size: 1.35rem;
+        letter-spacing: 0.04em;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--text);
+        font-weight: 700;
+      }
+      .brand span {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.65rem;
+        border-radius: 999px;
+        border: 1px solid rgba(37, 99, 235, 0.45);
+        color: #bfdbfe;
+        background: rgba(37, 99, 235, 0.25);
+      }
+      nav {
+        display: flex;
+        gap: 0.75rem;
+      }
+      nav a {
+        text-decoration: none;
+        color: var(--text);
+        padding: 0.45rem 1rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-weight: 500;
+        transition: border-color 0.2s ease, color 0.2s ease;
+      }
+      nav a:hover {
+        border-color: rgba(56, 189, 248, 0.4);
+        color: #bae6fd;
+      }
+      main {
+        padding: 2.5rem 5vw 4rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        gap: 2rem;
+      }
+      .card,
+      .glass {
+        border-radius: 1.25rem;
+        padding: 1.75rem;
+        border: 1px solid var(--stroke);
+        background: var(--card);
+        backdrop-filter: blur(14px);
+        box-shadow: 0 35px 80px rgba(2, 6, 23, 0.55);
+      }
+      .card h2 {
+        margin-top: 0;
+        margin-bottom: 0.35rem;
+      }
+      p {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .btn,
+      button,
+      input[type="submit"] {
+        border: none;
+        border-radius: 999px;
+        padding: 0.85rem 1.75rem;
+        background: var(--accent);
+        color: #020617;
+        cursor: pointer;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        letter-spacing: 0.02em;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .btn:hover,
+      button:hover,
+      input[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 40px rgba(37, 99, 235, 0.45);
+      }
+      form {
+        display: grid;
+        gap: 1.2rem;
+      }
+      label {
+        font-weight: 600;
+        color: var(--text);
+        font-size: 0.95rem;
+      }
+      input,
+      select {
+        background: rgba(15, 23, 42, 0.75);
+        border-radius: 1rem;
+        border: 1px solid transparent;
+        padding: 0.95rem 1rem;
+        color: var(--text);
+        font-size: 1rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: rgba(56, 189, 248, 0.6);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.35);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1.5rem;
+      }
+      table th,
+      table td {
+        padding: 0.9rem 0.75rem;
+        border-bottom: 1px solid var(--stroke);
+        text-align: left;
+      }
+      table th {
+        color: var(--muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 0.8rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+      }
+      .flash {
+        background: rgba(37, 99, 235, 0.2);
+        border: 1px solid rgba(37, 99, 235, 0.5);
+        color: var(--text);
+        padding: 1rem 1.25rem;
+        border-radius: 0.85rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      .badge {
+        padding: 0.35rem 0.85rem;
+        border-radius: 999px;
+        background: rgba(37, 99, 235, 0.25);
+        border: 1px solid rgba(37, 99, 235, 0.45);
+        font-size: 0.8rem;
+        color: #e0f2fe;
+        display: inline-flex;
+        gap: 0.35rem;
+        align-items: center;
+      }
+      .surface {
+        border: 1px dashed rgba(148, 163, 184, 0.4);
+        border-radius: 1.25rem;
+        padding: 1.5rem;
+        text-align: center;
+        font-size: 0.95rem;
+        color: var(--muted);
+        width: 100%;
+      }
+      .surface strong {
+        color: var(--text);
+      }
+      .step-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        min-height: 260px;
+      }
+      .step-card .step-actions {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+      }
+      .step-card .step-actions .btn,
+      .step-card .step-actions input[type="submit"] {
+        width: 100%;
+      }
+      .page-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        text-decoration: none;
+        color: var(--text);
+        font-weight: 600;
+        padding: 0.45rem 1rem;
+        border-radius: 999px;
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        background: rgba(15, 23, 42, 0.8);
+        box-shadow: 0 8px 20px rgba(2, 6, 23, 0.45);
+      }
+      header h1,
+      header h1 a,
+      .brand {
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="{{ url_for('index') }}">ManageAttendance <span>anywhere</span></a>
+      <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('register') }}">Register</a>
+        <a href="{{ url_for('attendance_view') }}">Attendance</a>
+        <a href="{{ url_for('summary_view') }}">Reports</a>
+      </nav>
+    </header>
+    <main>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <section class="flash">
+            {% for message in messages %}
+              <div>{{ message }}</div>
+            {% endfor %}
+          </section>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+    <footer style="text-align:center; padding:1.5rem; color:var(--muted); font-size:0.9rem;">
+      Created by Shashank Modi, Ujjwal Agrawal, Arushi Kondilya and Anup Ghimire.
+    </footer>
+  </body>
+</html>

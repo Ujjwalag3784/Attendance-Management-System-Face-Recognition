@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Capture Attendance · ManageAttendance{% endblock %}
+{% block content %}
+  <a class="page-back" href="{{ url_for('index') }}">← Back to dashboard</a>
+  <section class="glass" style="display:grid; gap:1.5rem;">
+    <div style="display:flex; flex-wrap:wrap; gap:1.25rem; align-items:center; justify-content:space-between;">
+      <div>
+        <h2 style="margin:0 0 0.4rem;">Live attendance capture</h2>
+        <p>Set a subject label, choose a capture duration, and keep the camera focused on the room. The recogniser will log every known face it sees.</p>
+      </div>
+      <div class="badge">Default window: {{ duration or 5 }}s</div>
+    </div>
+    <form method="post" class="card" style="display:grid; gap:1.2rem;">
+      <div>
+        <label for="subject">Subject name</label>
+        <input
+          type="text"
+          id="subject"
+          name="subject"
+          required
+          placeholder="e.g. Data Science"
+          value="{{ subject or '' }}"
+        />
+      </div>
+
+      <div>
+        <label for="duration">Capture duration (seconds)</label>
+        <input
+          type="number"
+          id="duration"
+          name="duration"
+          min="5"
+          max="120"
+          value="{{ duration or 5 }}"
+        />
+      </div>
+      <input type="submit" value="Begin capture" />
+    </form>
+  </section>
+
+  {% if result %}
+    <section class="card" style="margin-top: 1.5rem;">
+      <div style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; justify-content:space-between;">
+        <h3 style="margin:0;">Latest capture</h3>
+        {% if result.file_path %}
+          <span class="badge">CSV saved at {{ result.file_path }}</span>
+        {% endif %}
+      </div>
+      {% if result.success and result.records %}
+        <p style="margin-top:0.75rem;">Unique faces detected: {{ result.records|length }}.</p>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                {% for column in result.columns %}
+                  <th>{{ column }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in result.records %}
+                <tr>
+                  {% for column in result.columns %}
+                    <td>{{ row[column] }}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p style="margin-top:1rem;">No faces were recorded. Try adjusting lighting and re-run the capture.</p>
+      {% endif %}
+    </section>
+  {% endif %}
+{% endblock %}
